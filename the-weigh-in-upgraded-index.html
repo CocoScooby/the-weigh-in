@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Weigh In</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen px-4">
+  <h1 class="text-4xl font-bold mb-4">The Weigh In</h1>
+  <p class="text-center max-w-md text-gray-300 mb-6">
+    Find your fight twin. Enter your stats to discover your closest match and share your Tale of the Tape.
+  </p>
+  <div class="w-full max-w-sm space-y-4 fade-in">
+    <input class="w-full p-3 rounded bg-gray-800 text-white placeholder-gray-400" type="number" id="height" placeholder="Height (cm)" />
+    <input class="w-full p-3 rounded bg-gray-800 text-white placeholder-gray-400" type="number" id="weight" placeholder="Weight (kg)" />
+    <input class="w-full p-3 rounded bg-gray-800 text-white placeholder-gray-400" type="number" id="age" placeholder="Age (optional)" />
+    <input class="w-full p-3 rounded bg-gray-800 text-white placeholder-gray-400" type="text" id="city" placeholder="City (optional)" />
+    <button onclick="findMatch()" class="w-full p-3 rounded bg-red-600 hover:bg-red-700 transition">Find My Match</button>
+    <div id="matchCard" class="hidden mt-6 p-4 bg-gray-800 rounded text-center fade-in">
+      <div class="flex justify-center mb-4">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Boxing_pictogram.svg/1200px-Boxing_pictogram.svg.png" alt="Fighter Silhouette" class="w-20 h-20" />
+      </div>
+      <p class="text-xl font-semibold" id="matchResult">Your fight twin is...</p>
+      <div class="mt-3 flex justify-center space-x-2">
+        <span class="bg-blue-600 px-2 py-1 rounded text-sm">🇺🇸</span>
+        <span class="bg-green-600 px-2 py-1 rounded text-sm">🥇 Champion</span>
+      </div>
+      <button onclick="shareMatch()" class="mt-4 px-4 py-2 bg-blue-500 rounded hover:bg-blue-600 transition">Share My Match</button>
+    </div>
+    <div class="text-center mt-6">
+      <div class="bg-gray-700 p-3 rounded">AdSense Ad Placeholder</div>
+    </div>
+  </div>
+  <script>
+    function findMatch() {
+      const card = document.getElementById("matchCard");
+      card.classList.remove("hidden");
+      const height = document.getElementById("height").value;
+      const weight = document.getElementById("weight").value;
+      const city = document.getElementById("city").value || 'unknown city';
+      const msg = `In the red corner, from ${city}, weighing in at ${weight}kg and ${height}cm tall!`;
+      const utterance = new SpeechSynthesisUtterance(msg);
+      utterance.rate = 0.9;
+      speechSynthesis.speak(utterance);
+      document.getElementById("matchResult").innerText = msg;
+    }
+
+    function shareMatch() {
+      const text = document.getElementById("matchResult").innerText;
+      if (navigator.share) {
+        navigator.share({
+          title: 'The Weigh In',
+          text: text,
+          url: window.location.href
+        });
+      } else {
+        alert("Sharing not supported. Copy this manually:
+
+" + text);
+      }
+    }
+  </script>
+</body>
+</html>
