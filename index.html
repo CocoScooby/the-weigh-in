@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Weigh In</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white font-sans">
+  <div class="max-w-md mx-auto p-6">
+    <h1 class="text-3xl font-bold text-center mb-6">The Weigh In</h1>
+    <form id="fightForm" class="space-y-4">
+      <input type="number" id="height" placeholder="Height (cm)" class="w-full p-3 rounded text-black" required />
+      <input type="number" id="weight" placeholder="Weight (kg)" class="w-full p-3 rounded text-black" required />
+      <input type="number" id="age" placeholder="Age (optional)" class="w-full p-3 rounded text-black" />
+      <button type="submit" class="w-full bg-red-600 hover:bg-red-700 py-3 rounded font-semibold">Find My Match</button>
+    </form>
+
+    <div id="result" class="mt-6 hidden">
+      <div id="card" class="bg-white text-black p-4 rounded shadow-lg">
+        <h2 class="text-xl font-bold mb-2">Tale of the Tape</h2>
+        <p id="matchInfo">Matching you with a fighter...</p>
+      </div>
+
+      <button id="playVoice" class="mt-4 bg-blue-600 hover:bg-blue-700 py-2 px-4 rounded font-semibold">Play Announcer Intro</button>
+    </div>
+
+    <!-- AdSense Placeholder -->
+    <div class="mt-6">
+      <div class="bg-gray-700 text-center py-4 rounded">
+        AdSense Ad Placeholder
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("fightForm");
+    const result = document.getElementById("result");
+    const matchInfo = document.getElementById("matchInfo");
+
+    const fighters = [
+      { name: "Conor McGregor", height: 175, weight: 70 },
+      { name: "Khabib Nurmagomedov", height: 178, weight: 70 },
+      { name: "Francis Ngannou", height: 193, weight: 119 },
+      { name: "Manny Pacquiao", height: 168, weight: 66 },
+      { name: "Tyson Fury", height: 206, weight: 120 }
+    ];
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const height = parseInt(document.getElementById("height").value);
+      const weight = parseInt(document.getElementById("weight").value);
+
+      let closest = fighters[0];
+      let minDiff = Infinity;
+      for (const f of fighters) {
+        const diff = Math.abs(f.height - height) + Math.abs(f.weight - weight);
+        if (diff < minDiff) {
+          closest = f;
+          minDiff = diff;
+        }
+      }
+      matchInfo.innerHTML = \`You match with <strong>\${closest.name}</strong> — \${closest.height}cm / \${closest.weight}kg\`;
+      result.classList.remove("hidden");
+    });
+
+    document.getElementById("playVoice").addEventListener("click", async () => {
+      const text = matchInfo.innerText;
+      const voice = new SpeechSynthesisUtterance(text);
+      voice.rate = 1;
+      voice.pitch = 1;
+      voice.lang = "en-US";
+      speechSynthesis.speak(voice);
+    });
+  </script>
+</body>
+</html>
